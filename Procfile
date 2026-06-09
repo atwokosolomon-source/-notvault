@@ -1,1 +1,1 @@
-web: python manage.py migrate && python manage.py collectstatic --noinput && gunicorn notvault.wsgi
+web: python manage.py migrate && python manage.py createsuperuser --noinput --username admin --email admin@notvault.com || true && python manage.py collectstatic --noinput && gunicorn notvault.wsgi
