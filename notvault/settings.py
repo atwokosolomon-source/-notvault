@@ -58,7 +58,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'notvault.wsgi.application'
 
 # ── Database ───────────────────────────────────────────────────
-import os
+
 
 DATABASES = {
     'default': {
@@ -100,4 +100,3 @@ CORS_ALLOW_ALL_ORIGINS = True   # lock this down when you deploy
 # ── Default primary key ────────────────────────────────────────
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Static files for production
-STATIC_ROOT = BASE_DIR / 'staticfiles'
