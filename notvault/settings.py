@@ -1,4 +1,5 @@
 import os
+import dj_database_url 
 from pathlib import Path
 
 
@@ -21,6 +22,8 @@ INSTALLED_APPS = [
     'rest_framework',       # Django REST Framework
     'corsheaders',          # allows Vue.js to call this API
     'notes',                # our notes app
+    'cloudinary',           # ← add
+    'cloudinary_storage',   # ← add
 ]
 
 # ── Middleware ─────────────────────────────────────────────────
@@ -61,14 +64,10 @@ WSGI_APPLICATION = 'notvault.wsgi.application'
 
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME':     os.environ.get('DB_NAME',     'notvault'),
-        'USER':     os.environ.get('DB_USER',     'postgres'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
-        'HOST':     os.environ.get('DB_HOST',     'localhost'),
-        'PORT':     os.environ.get('DB_PORT',     '5432'),
-    }
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL'),
+        conn_max_age=600
+    )
 }
 # ── Password validators ────────────────────────────────────────
 AUTH_PASSWORD_VALIDATORS = [
@@ -91,11 +90,22 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # ── Media files (uploaded PDFs) ────────────────────────────────
+import cloudinary_storage        # ← only after you install cloudinary
+
 MEDIA_URL  = '/uploads/'
 MEDIA_ROOT = BASE_DIR / 'uploads'
 
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY':    os.environ.get('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
+}
 # ── CORS ───────────────────────────────────────────────────────
-CORS_ALLOW_ALL_ORIGINS = True   # lock this down when you deploy
+CORS_ALLOWED_ORIGINS = [
+    'https://your-site.netlify.app',  # ← your actual Netlify URL
+]   # lock this down when you deploy
 
 # ── Default primary key ────────────────────────────────────────
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
